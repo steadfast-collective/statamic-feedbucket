@@ -17,7 +17,7 @@ composer require steadfast-collective/statamic-feedbucket
 >
 > If a global blueprint with the handle `feedbucket` already exists, it will be skipped.
 
-Optionally, publish the config file `php artisan vendor:publish --tag="statamic-feedbucket-config"` (this it only relevant if you're wanting to use Feedbucket within the CP).
+Optionally, publish the config file `php artisan vendor:publish --tag="statamic-feedbucket-config"` (this is only relevant if you're wanting to use Feedbucket within the CP).
 ## Enabling
 
 ### Front end
