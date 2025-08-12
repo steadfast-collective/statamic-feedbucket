@@ -1,0 +1,37 @@
+{
+    "name": "steadfast-collective/statamic-feedbucket",
+    "autoload": {
+        "psr-4": {
+            "SteadfastCollective\\StatamicFeedbucket\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SteadfastCollective\\StatamicFeedbucket\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "statamic/cms": "^5.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Statamic Feedbucket",
+            "description": "Statamic Feedbucket addon"
+        },
+        "laravel": {
+            "providers": [
+                "SteadfastCollective\\StatamicFeedbucket\\ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

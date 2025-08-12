@@ -1,0 +1,43 @@
+title: 'Global: Feedbucket'
+fields:
+  -
+    handle: enabled_environments
+    field:
+      type: group
+      display: 'Enabled Environments'
+      instructions: 'Select the environments Feedbucket should be enabled in'
+      fields:
+        -
+          handle: local
+          field:
+            type: toggle
+            display: Local
+            width: 33
+        -
+          handle: staging
+          field:
+            type: toggle
+            display: Staging
+            width: 33
+        -
+          handle: production
+          field:
+            type: toggle
+            display: Production
+            width: 33
+  -
+    handle: feedbucket_id
+    field:
+      type: text
+      display: 'Feedbucket ID'
+      instructions: 'When you have the Feedbucket script, the ID is the 20-character code at the end of the script.'
+  -
+    handle: enable_in_cms
+    field:
+      type: toggle
+      display: 'Enable in CMS?'
+      instructions: |-
+        <strong>Note:</strong> Before enabling feedbucket within Statamic, ensure the client knows what can be changed, and what cannnot.
+
+        Use the config file to specify what CMS route names feedbucket should be enabled for.
+      instructions_position: below

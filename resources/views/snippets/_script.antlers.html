@@ -1,0 +1,15 @@
+{{ if
+    (environment == 'local' && feedbucket:enabled_environments:local) or
+    (environment == 'staging' && feedbucket:enabled_environments:staging) or
+    (environment == 'production' && feedbucket:enabled_environments:production)
+}}
+    {{ if feedbucket:feedbucket_id }}
+        <script type="text/javascript">
+            (function(k,s) {
+                s=document.createElement('script');s.module=true;s.async=true;
+                s.src="https://cdn.feedbucket.app/assets/feedbucket.js";
+                s.dataset.feedbucket=k;document.head.appendChild(s);
+            })('{{ feedbucket:feedbucket_id }}')
+        </script>
+    {{ /if }}
+{{ /if }}
