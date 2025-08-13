@@ -105,4 +105,103 @@ class ApplyFeedbucketToCPTest extends TestCase
         $request->assertOK();
         $request->assertDontSee($this->feedbucketString);
     }
+
+    public function test_feedbucket_not_included_for_unknown_environment(): void
+    {
+        $this->setGlobal();
+
+        config([
+            'statamic-feedbucket.cms_routes' => ['statamic.cp.dashboard'],
+            'app.env' => 'testing'
+        ]);
+
+        $user = User::make()->makeSuper();
+        $user->save();
+        $this->actingAs($user);
+
+        $request = $this->get('/cp/dashboard');
+
+        $request->assertOK();
+        $request->assertDontSee($this->feedbucketString);
+    }
+
+    public function test_feedbucket_is_not_included_when_not_enabled_in_cms(): void
+    {
+        $this->setGlobal([
+            'enable_in_cms' => false,
+        ]);
+
+        config([
+            'statamic-feedbucket.cms_routes' => ['statamic.cp.dashboard'],
+            'app.env' => 'local'
+        ]);
+
+        $user = User::make()->makeSuper();
+        $user->save();
+        $this->actingAs($user);
+
+        $request = $this->get('/cp/dashboard');
+
+        $request->assertOK();
+        $request->assertDontSee($this->feedbucketString);
+    }
+
+    public function test_feedbucket_is_not_included_if_no_id(): void
+    {
+        $this->setGlobal([
+            'feedbucket_id' => null,
+        ]);
+
+        config([
+            'statamic-feedbucket.cms_routes' => ['statamic.cp.dashboard'],
+            'app.env' => 'local'
+        ]);
+
+        $user = User::make()->makeSuper();
+        $user->save();
+        $this->actingAs($user);
+
+        $request = $this->get('/cp/dashboard');
+
+        $request->assertOK();
+        $request->assertDontSee($this->feedbucketString);
+    }
+
+    public function test_feedbucket_handles_missing_global_set(): void
+    {
+        // Don't create any global set
+
+        config([
+            'statamic-feedbucket.cms_routes' => ['statamic.cp.dashboard'],
+            'app.env' => 'local'
+        ]);
+
+        $user = User::make()->makeSuper();
+        $user->save();
+        $this->actingAs($user);
+
+        $request = $this->get('/cp/dashboard');
+
+        $request->assertOK();
+        $request->assertDontSee($this->feedbucketString);
+    }
+
+    public function test_feedbucket_not_included_if_no_routes_configured(): void
+    {
+        $this->setGlobal();
+
+        config([
+            'statamic-feedbucket.cms_routes' => [],
+            'app.env' => 'local'
+        ]);
+
+        $user = User::make()->makeSuper();
+        $user->save();
+        $this->actingAs($user);
+
+        $request = $this->get('/cp/dashboard');
+
+        $request->assertOK();
+        $request->assertDontSee($this->feedbucketString);
+    }
 }
