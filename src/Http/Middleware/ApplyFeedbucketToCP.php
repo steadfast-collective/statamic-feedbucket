@@ -23,14 +23,19 @@ class ApplyFeedbucketToCP
         try {
             $feedbucket = GlobalSet::findByHandle('feedbucket')?->inCurrentSite();
 
-            $this->shouldEnableFeedbucket($feedbucket);
+            if (!$feedbucket) {
+                Log::error('Feedbucket global set not found. Ensure it is created and configured correctly.');
+                return $next($request);
+            }
 
             if($feedbucket && $this->shouldEnableFeedbucket($feedbucket)) {
+                ray('INJECT FEEDBUCKET');
                 $this->injectScript($feedbucket->feedbucket_id);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to inject Feedbucket into CP: ' . $e->getMessage());
+            dd('Failed to inject Feedbucket into CP: ' . $e->getMessage());
         }
 
         return $next($request);
@@ -49,9 +54,9 @@ class ApplyFeedbucketToCP
 
         // Check if the environment is enabled
         return match (config('app.env')) {
-            'local' => $feedbucket->enabled_environments->local,
-            'staging' => $feedbucket->enabled_environments->staging,
-            'production' => $feedbucket->enabled_environments->production,
+            'local' => $feedbucket->enabled_environments['local'],
+            'staging' => $feedbucket->enabled_environments['staging'],
+            'production' => $feedbucket->enabled_environments['production'],
             default => false
         };
     }

@@ -23,7 +23,7 @@ Optionally, publish the config file `php artisan vendor:publish --tag="statamic-
 ### Front end
 
 Add the following to your base layout's `head`, to enable feedbucket for your frontend:
-```{{ partial:statamic-feedbucket::snippets/script }}```
+```{{ partial:statamic-feedbucket::snippets/frontend_script }}```
 
 ### Statamic CP
 Within the `config/statamic-feedbucket.php` config file, there is an `cms_routes` array of route names that Feedbucket will be enabled on. We've added some sensible defaults, but you can change them to suit your needs.
