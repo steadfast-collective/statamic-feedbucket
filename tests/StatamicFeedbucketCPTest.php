@@ -44,6 +44,18 @@ class StatamicFeedbucketCPTest extends TestCase
 
         $request->assertOK();
         $request->assertSee($this->feedbucketString);
+
+        config([
+            'statamic-feedbucket.cms_routes' => ['statamic.cp.dashboard'],
+            'app.env' => 'local'
+        ]);
+
+        $request = $this->get('/cp/collections');
+
+        ray($request->getContent());
+
+        $request->assertOK();
+        $request->assertDontSee($this->feedbucketString);
     }
 
     public function test_feedbucket_is_not_included_if_page_is_not_in_config(): void
