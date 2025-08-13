@@ -44,7 +44,7 @@ abstract class TestCase extends AddonTestCase
             $property->setValue(null, []);
         }
     }
-    
+
     protected function setGlobal(array $params = []): void
     {
         $global = GlobalSet::make('feedbucket');
@@ -60,7 +60,7 @@ abstract class TestCase extends AddonTestCase
             ],
         ];
 
-        $variables->data(array_merge_recursive($defaultParams, $params));
+        $variables->data(array_merge($defaultParams, $params));
 
         $global->addLocalization($variables);
         $global->save();
