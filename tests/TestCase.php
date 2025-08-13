@@ -2,6 +2,7 @@
 
 namespace SteadfastCollective\StatamicFeedbucket\Tests;
 
+use Statamic\Facades\GlobalSet;
 use Statamic\Testing\AddonTestCase;
 use SteadfastCollective\StatamicFeedbucket\ServiceProvider;
 use Statamic\Testing\Concerns\PreventsSavingStacheItemsToDisk;
@@ -32,5 +33,36 @@ abstract class TestCase extends AddonTestCase
         }
 
         parent::tearDown();
+    }
+
+    protected function clearStatamicInlineScripts(): void
+    {
+        if (property_exists(\Statamic\Statamic::class, 'inlineScripts')) {
+            $reflection = new \ReflectionClass(\Statamic\Statamic::class);
+            $property = $reflection->getProperty('inlineScripts');
+            $property->setAccessible(true);
+            $property->setValue(null, []);
+        }
+    }
+    
+    protected function setGlobal(array $params = []): void
+    {
+        $global = GlobalSet::make('feedbucket');
+        $variables = $global->makeLocalization('default');
+
+        $defaultParams = [
+            'enable_in_cms' => true,
+            'feedbucket_id' => 'abc123',
+            'enabled_environments' => [
+                'local' => true,
+                'staging' => false,
+                'production' => false,
+            ],
+        ];
+
+        $variables->data(array_merge_recursive($defaultParams, $params));
+
+        $global->addLocalization($variables);
+        $global->save();
     }
 }
