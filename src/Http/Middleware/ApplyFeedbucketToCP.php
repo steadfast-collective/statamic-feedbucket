@@ -29,13 +29,11 @@ class ApplyFeedbucketToCP
             }
 
             if($feedbucket && $this->shouldEnableFeedbucket($feedbucket)) {
-                ray('INJECT FEEDBUCKET');
                 $this->injectScript($feedbucket->feedbucket_id);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to inject Feedbucket into CP: ' . $e->getMessage());
-            dd('Failed to inject Feedbucket into CP: ' . $e->getMessage());
         }
 
         return $next($request);
