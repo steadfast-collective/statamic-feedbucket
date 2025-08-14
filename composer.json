@@ -1,5 +1,6 @@
 {
     "name": "steadfast-collective/statamic-feedbucket",
+    "description": "Statamic Addon that integrates Feedbucket into Statamic.",
     "autoload": {
         "psr-4": {
             "SteadfastCollective\\StatamicFeedbucket\\": "src"
