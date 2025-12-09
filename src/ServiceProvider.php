@@ -17,7 +17,7 @@ class ServiceProvider extends AddonServiceProvider
     public function bootAddon()
     {
         $this->registerFieldsets();
-        $this->registerGlobalBlueprints();
+        $this->registerAddonSettings();
         $this->registerViews();
 
         Statamic::afterInstalled(function($command) {
@@ -32,17 +32,30 @@ class ServiceProvider extends AddonServiceProvider
         ], 'statamic-feedbucket-fieldsets');
     }
 
-    protected function registerGlobalBlueprints(): void
-    {
-        $this->publishes([
-            __DIR__.'/../resources/blueprints/globals' => resource_path('blueprints/globals'),
-        ], 'statamic-feedbucket-blueprints');
-    }
-
     protected function registerViews(): void
     {
         $this->publishes([
             __DIR__ . '/../resources/views' => resource_path('views/vendor/statamic-feedbucket'),
         ], 'statamic-feedbucket-views');
+    }
+
+    protected function registerAddonSettings(): void
+    {
+        $this->registerSettingsBlueprint([
+            'tabs' => [
+                'main' => [
+                    'sections' => [
+                        [
+                            'display' => 'Feedbucket Settings',
+                            'fields' => [
+                                [
+                                    'import' => 'statamic-feedbucket::global_feedbucket'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
     }
 }
