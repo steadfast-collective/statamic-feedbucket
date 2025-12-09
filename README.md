@@ -14,17 +14,6 @@ You can install this addon via Composer:
 composer  require  steadfast-collective/statamic-feedbucket
 ```
 
-> This addon creates a "Feedbucket" global, fieldset and blueprint on install. If the global already exists, it will not be created.
-
->
-
-> If a fieldset with the handle `global_feedbucket` already exists, it will be skipped.
-
->
-
-> If a global blueprint with the handle `feedbucket` already exists, it will be skipped.
-
-  
 
 Optionally, publish the config file `php artisan vendor:publish --tag="statamic-feedbucket-config"` (this is only relevant if you're wanting to use Feedbucket within the CP).
 
@@ -33,7 +22,7 @@ Optionally, publish the config file `php artisan vendor:publish --tag="statamic-
 Add the following to your base layout's `head`, to enable feedbucket for your frontend:
 
 ```
-{{ partial:statamic-feedbucket::snippets/frontend_script }}
+{{ feedbucket }}
 ```
 
 ### Statamic CP
