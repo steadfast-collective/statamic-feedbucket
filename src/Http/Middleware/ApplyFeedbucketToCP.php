@@ -4,7 +4,9 @@ namespace SteadfastCollective\StatamicFeedbucket\Http\Middleware;
 
 use Closure;
 use Statamic\Statamic;
+use Statamic\Facades\Addon;
 use Illuminate\Http\Request;
+use Statamic\Addons\Settings;
 use Statamic\Facades\GlobalSet;
 use Statamic\Globals\Variables;
 use Illuminate\Support\Facades\Log;
@@ -21,15 +23,15 @@ class ApplyFeedbucketToCP
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $feedbucket = GlobalSet::findByHandle('feedbucket')?->inCurrentSite();
+            $settings = Addon::get('steadfast-collective/statamic-feedbucket')->settings();
 
-            if (!$feedbucket) {
-                Log::error('Feedbucket global set not found. Ensure it is created and configured correctly.');
+            if (!$settings) {
+                Log::error('Feedbucket addon settings not found.');
                 return $next($request);
             }
 
-            if($feedbucket && $this->shouldEnableFeedbucket($feedbucket)) {
-                $this->injectScript($feedbucket->feedbucket_id);
+            if($this->shouldEnableFeedbucket($settings)) {
+                $this->injectScript($settings->get('feedbucket_id'));
             }
 
         } catch (\Exception $e) {
@@ -39,9 +41,9 @@ class ApplyFeedbucketToCP
         return $next($request);
     }
 
-    private function shouldEnableFeedbucket(Variables $feedbucket): bool
+    private function shouldEnableFeedbucket(Settings $feedbucket): bool
     {
-        if (!$feedbucket->enable_in_cms || !$feedbucket->feedbucket_id) {
+        if ((boolean) !$feedbucket->get('enable_in_cms') || !$feedbucket->get('feedbucket_id')) {
             return false;
         }
 
@@ -52,9 +54,9 @@ class ApplyFeedbucketToCP
 
         // Check if the environment is enabled
         return match (config('app.env')) {
-            'local' => $feedbucket->enabled_environments['local'],
-            'staging' => $feedbucket->enabled_environments['staging'],
-            'production' => $feedbucket->enabled_environments['production'],
+            'local' => (boolean) $feedbucket->get('enabled_environments')['local'],
+            'staging' => (boolean) $feedbucket->get('enabled_environments')['staging'],
+            'production' => (boolean) $feedbucket->get('enabled_environments')['production'],
             default => false
         };
     }
