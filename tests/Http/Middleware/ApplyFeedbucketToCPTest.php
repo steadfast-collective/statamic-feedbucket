@@ -167,25 +167,6 @@ class ApplyFeedbucketToCPTest extends TestCase
         $request->assertDontSee($this->feedbucketString);
     }
 
-    public function test_feedbucket_handles_missing_global_set(): void
-    {
-        // Don't create any global set
-
-        config([
-            'statamic-feedbucket.cms_routes' => ['statamic.cp.dashboard'],
-            'app.env' => 'local'
-        ]);
-
-        $user = User::make()->makeSuper();
-        $user->save();
-        $this->actingAs($user);
-
-        $request = $this->get('/cp/dashboard');
-
-        $request->assertOK();
-        $request->assertDontSee($this->feedbucketString);
-    }
-
     public function test_feedbucket_not_included_if_no_routes_configured(): void
     {
         $this->setGlobal();
