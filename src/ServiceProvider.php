@@ -19,10 +19,6 @@ class ServiceProvider extends AddonServiceProvider
         $this->registerFieldsets();
         $this->registerAddonSettings();
         $this->registerViews();
-
-        Statamic::afterInstalled(function($command) {
-            $command->call('statamic-feedbucket:create-global');
-        });
     }
 
     protected function registerFieldsets(): void
