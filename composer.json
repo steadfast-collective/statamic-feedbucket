@@ -13,7 +13,7 @@
         }
     },
     "require": {
-        "statamic/cms": "^5.0",
+        "statamic/cms": "^6.0",
         "spatie/laravel-ray": "^1.40"
     },
     "require-dev": {

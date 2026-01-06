@@ -3,12 +3,16 @@
 namespace SteadfastCollective\StatamicFeedbucket\Http\Middleware;
 
 use Closure;
+use Inertia\Inertia;
 use Statamic\Statamic;
+use Statamic\Facades\Addon;
 use Illuminate\Http\Request;
+use Statamic\Addons\Settings;
 use Statamic\Facades\GlobalSet;
 use Statamic\Globals\Variables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use SteadfastCollective\StatamicFeedbucket\Library\FeedbucketHelpers;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApplyFeedbucketToCP
@@ -21,57 +25,37 @@ class ApplyFeedbucketToCP
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $feedbucket = GlobalSet::findByHandle('feedbucket')?->inCurrentSite();
+            $settings = Addon::get('steadfast-collective/statamic-feedbucket')->settings();
 
-            if (!$feedbucket) {
-                Log::error('Feedbucket global set not found. Ensure it is created and configured correctly.');
+            if (!$settings) {
+                Log::error('Feedbucket addon settings not found.');
                 return $next($request);
             }
 
-            if($feedbucket && $this->shouldEnableFeedbucket($feedbucket)) {
-                $this->injectScript($feedbucket->feedbucket_id);
-            }
+            // Determine visibility
+            $this->determineFeedbucketVisibility($settings);
 
         } catch (\Exception $e) {
+            Inertia::share('statamicFeedbucket', function() {
+                return [
+                    'show' => false
+                ];
+            });
+
             Log::error('Failed to inject Feedbucket into CP: ' . $e->getMessage());
         }
 
         return $next($request);
     }
 
-    private function shouldEnableFeedbucket(Variables $feedbucket): bool
+    protected function determineFeedbucketVisibility(Settings $settings)
     {
-        if (!$feedbucket->enable_in_cms || !$feedbucket->feedbucket_id) {
-            return false;
-        }
+        $show = FeedbucketHelpers::shouldEnableFeedbucketInCP($settings);
 
-        // Check if current route is in the cms_route in config
-        if(!in_array(Route::currentRouteName(), config('statamic-feedbucket.cms_routes'))) {
-            return false;
-        }
-
-        // Check if the environment is enabled
-        return match (config('app.env')) {
-            'local' => $feedbucket->enabled_environments['local'],
-            'staging' => $feedbucket->enabled_environments['staging'],
-            'production' => $feedbucket->enabled_environments['production'],
-            default => false
-        };
-    }
-
-    private function injectScript(string $feedbucketId): void
-    {
-        $script = <<<JS
-            (function(k,s) {
-                s=document.createElement('script');
-                s.module=true;
-                s.async=true;
-                s.src='https://cdn.feedbucket.app/assets/feedbucket.js';
-                s.dataset.feedbucket=k;
-                document.head.appendChild(s);
-            })('$feedbucketId');
-        JS;
-
-        Statamic::inlineScript($script);
+        Inertia::share('statamicFeedbucket', function() use ($show) {
+            return [
+                'show' => $show
+            ];
+        });
     }
 }
