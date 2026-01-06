@@ -80,7 +80,7 @@ class ServiceProvider extends AddonServiceProvider
             return;
         }
 
-        if(!FeedbucketHelpers::shouldEnableFeedbucket($settings, false)) {
+        if(!FeedbucketHelpers::shouldEnableFeedbucketInCP($settings, false)) {
             return;
         }
 
@@ -113,7 +113,7 @@ class ServiceProvider extends AddonServiceProvider
         Statamic::inlineScript($script);
     }
 
-    private function shouldEnableFeedbucket(Settings $feedbucket): bool
+    private function shouldEnableFeedbucketInCP(Settings $feedbucket): bool
     {
         if ((boolean) !$feedbucket->get('enable_in_cms') || !$feedbucket->get('feedbucket_id')) {
             return false;

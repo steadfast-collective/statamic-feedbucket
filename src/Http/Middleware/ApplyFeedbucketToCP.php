@@ -50,7 +50,7 @@ class ApplyFeedbucketToCP
 
     protected function determineFeedbucketVisibility(Settings $settings)
     {
-        $show = FeedbucketHelpers::shouldEnableFeedbucket($settings);
+        $show = FeedbucketHelpers::shouldEnableFeedbucketInCP($settings);
 
         Inertia::share('statamicFeedbucket', function() use ($show) {
             return [

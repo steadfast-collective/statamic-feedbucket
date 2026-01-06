@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 class FeedbucketHelpers
 {
-    public static function shouldEnableFeedbucket(Settings $feedbucket, bool $routeCheck = true): bool
+    public static function shouldEnableFeedbucketInCP(Settings $feedbucket, bool $routeCheck = true): bool
     {
         if ((boolean) !$feedbucket->get('enable_in_cms') || !$feedbucket->get('feedbucket_id')) {
             return false;
