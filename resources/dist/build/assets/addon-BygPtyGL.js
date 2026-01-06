@@ -1,0 +1,1 @@
+const{Form:i,Head:n,Link:l,router:a,useForm:d,usePoll:r}=__STATAMIC__.inertia;Statamic.booted(()=>{a.on("navigate",s=>{onFeedbucketReady(e=>{var o;((o=s.detail.page.props.statamicFeedbucket)==null?void 0:o.show)!==!1?e.style.display="inline":e.style.display="none"})})});
